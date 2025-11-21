@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UI Bug Demo: The Clipped Dropdown</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #eef2f3;
+            margin: 0;
+        }
+
+        .card {
+            background: white;
+            width: 300px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            padding: 20px;
+            
+            /* 
+               BUG: This overflow: hidden is clipping the dropdown
+            */
+            overflow: hidden; 
+            
+            position: relative;
+        }
+
+        h2 { margin-top: 0; color: #333; }
+        p { color: #666; line-height: 1.5; }
+
+        .menu-container {
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .menu-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #6c5ce7;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .menu-btn:hover { background-color: #5b4bc4; }
+
+        .dropdown {
+            display: none;
+            position: absolute;
+            top: 110%;
+            left: 0;
+            width: 100%;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 9999;
+        }
+
+        .dropdown.active { display: block; }
+
+        .dropdown-item {
+            padding: 12px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            color: #333;
+        }
+
+        .dropdown-item:last-child { border-bottom: none; }
+        .dropdown-item:hover { background-color: #f8f9fa; }
+
+    </style>
+</head>
+<body>
+
+    <div class="card" id="card-container">
+        <h2>Settings</h2>
+        <p>Manage your preferences here. Click the button below to see more options.</p>
+        
+        <div class="menu-container">
+            <button class="menu-btn" id="menu-btn" onclick="toggleDropdown()">
+                <span>Actions</span>
+                <span>▼</span>
+            </button>
+            
+            <div class="dropdown" id="myDropdown">
+                <div class="dropdown-item">Edit Profile</div>
+                <div class="dropdown-item">Privacy Settings</div>
+                <div class="dropdown-item">Notifications</div>
+                <div class="dropdown-item" style="color: red;">Delete Account</div>
+            </div>
+        </div>
+
+        <p>Notice how the dropdown menu gets cut off at the bottom of this card?</p>
+    </div>
+
+    <script>
+        function toggleDropdown() {
+            const dropdown = document.getElementById('myDropdown');
+            dropdown.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>
