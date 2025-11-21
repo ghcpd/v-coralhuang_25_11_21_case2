@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Settings — Fixed Dropdown (Tailwind)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+      html,body { height: 100%; }
+      body { font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; }
+      .dropdown-enter { transform-origin: top; opacity: 0; transform: translateY(-6px) scale(0.98); }
+      .dropdown-enter-active { transition: transform 180ms cubic-bezier(.2,.8,.2,1), opacity 160ms ease-out; opacity: 1; transform: translateY(0) scale(1); }
+      .dropdown-leave { opacity: 1; }
+      .dropdown-leave-active { transition: opacity 120ms ease-in; opacity: 0; }
+    </style>
+  </head>
+  <body class="min-h-screen bg-gradient-to-br from-indigo-50 via-sky-50 to-rose-50 flex items-center justify-center p-6">
+    <main class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8">
+      <section class="col-span-1 md:col-span-1 flex items-center justify-center">
+        <div class="relative w-full max-w-sm bg-white/60 backdrop-blur-sm rounded-2xl shadow-2xl p-6 border border-white/20 overflow-hidden">
+          <div class="space-y-4">
+            <div class="flex items-center gap-3">
+              <div class="bg-indigo-600 text-white p-3 rounded-lg shadow">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M11 17a1 1 0 01-1 1H4a1 1 0 01-1-1V9a1 1 0 011-1h6a1 1 0 011 1v8z" />
+                  <path d="M17 11a1 1 0 01-1 1h-1v4a1 1 0 01-1 1H9v-2h4v-3a2 2 0 00-2-2H7V7h6a4 4 0 014 4v0z" />
+                </svg>
+              </div>
+              <div>
+                <h1 class="text-xl font-semibold text-slate-800">Settings</h1>
+                <p class="text-sm text-slate-500">All your configurable preferences in one place</p>
+              </div>
+            </div>
+            <div class="text-slate-600 text-sm">
+              When a dropdown is appended to <span class="font-medium">body</span> via a portal, it escapes clipping and remains fully visible.
+            </div>
+            <div class="mt-4">
+              <label class="block text-xs text-slate-500 mb-2">Account</label>
+              <div class="grid grid-cols-1 gap-3">
+                <button id="portalActionsBtn" class="actions-btn flex items-center justify-between gap-3 px-4 py-3 bg-gradient-to-tr from-indigo-600 to-sky-500 hover:from-indigo-700 hover:to-sky-600 text-white rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-300" aria-haspopup="true" aria-expanded="false"> 
+                  <span class="font-medium">Actions</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transform transition-transform duration-150" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="mt-4 text-xs text-slate-500">
+              <p class="mb-1">Tip: Try resizing or scrolling the page — the dropdown stays visible because it’s placed on the document root (portal pattern).</p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="col-span-1 md:col-span-1 flex items-start justify-center">
+        <div class="w-full max-w-lg bg-white rounded-2xl p-6 shadow-lg border border-white/20">
+          <div class="mb-4">
+            <h2 class="text-lg font-semibold text-slate-800">Preview & Controls</h2>
+            <p class="text-sm text-slate-500">Toggle the dropdown from the left. The menu remains fully visible and accessible.</p>
+          </div>
+          <div class="grid gap-4">
+            <div class="flex items-center justify-between bg-slate-50 rounded-lg border border-dashed border-slate-100 p-4">
+              <div class="text-slate-600">
+                <p class="text-sm font-medium">State</p>
+                <p class="text-xs text-slate-400 mt-0.5">Dropdown is attached to document.body</p>
+              </div>
+              <div class="flex items-center gap-3">
+                <span id="stateIndicator" class="text-xs text-white px-2 py-1 rounded bg-green-500">Attached</span>
+              </div>
+            </div>
+            <div class="rounded-lg border p-4 bg-gradient-to-br from-white to-slate-50">
+              <h3 class="text-sm font-medium text-slate-700 mb-2">Why this works</h3>
+              <ul class="text-sm text-slate-500 space-y-2 list-disc pl-5">
+                <li>We append the dropdown to the document root so it escapes parent clipping.</li>
+                <li>We position it near the triggering button using its bounding rect.</li>
+                <li>It's fully keyboard accessible and responsive.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <div id="portal" aria-hidden="true"></div>
+    <script>
+      (function() {
+        const btn = document.getElementById('portalActionsBtn');
+        const portalRoot = document.getElementById('portal');
+        let dropdown = null;
+        let active = false;
+        const items = [
+          { label: 'Edit Profile', color: '' },
+          { label: 'Privacy Settings', color: '' },
+          { label: 'Notifications', color: '' },
+          { label: 'Delete Account', color: 'text-rose-500' }
+        ];
+        function buildDropdown() {
+          const el = document.createElement('div');
+          el.id = 'portal-dropdown';
+          el.setAttribute('role', 'menu');
+          el.className = 'portal-dropdown shadow-lg rounded-lg bg-white ring-1 ring-slate-200 py-1 w-56 z-50 dropdown-enter dropdown-enter-active';
+          el.style.position = 'absolute';
+          el.style.minWidth = '12rem';
+          el.style.boxShadow = '0 10px 30px rgba(2,6,23,0.12)';
+          if (items.length === 0) {
+            const empty = document.createElement('div');
+            empty.className = 'text-slate-500 p-3 text-sm';
+            empty.innerText = "No actions available";
+            el.appendChild(empty);
+            return el;
+          }
+          items.forEach((i, idx) => {
+            const item = document.createElement('div');
+            item.className = 'menu-item px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 cursor-pointer flex items-center gap-2';
+            if (i.color) item.classList.add(i.color);
+            item.setAttribute('role', 'menuitem');
+            item.tabIndex = 0;
+            item.innerHTML = `<span class='flex-1'>${i.label}</span>`;
+            item.addEventListener('click', () => {
+              closeDropdown();
+              alert(`Selected: ${i.label}`);
+            });
+            item.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') item.click(); });
+            el.appendChild(item);
+          });
+          return el;
+        }
+        function openDropdown() {
+          if (active) return;
+          dropdown = buildDropdown();
+          portalRoot.appendChild(dropdown);
+          positionDropdown();
+          window.setTimeout(() => { dropdown.classList.remove('dropdown-enter'); }, 10);
+          active = true;
+          btn.setAttribute('aria-expanded', 'true');
+          document.addEventListener('click', onDocumentClick);
+          document.addEventListener('keydown', onKeyDown);
+          window.addEventListener('resize', positionDropdown);
+          window.addEventListener('scroll', positionDropdown, true);
+        }
+        function closeDropdown() {
+          if (!active) return;
+          dropdown.remove();
+          dropdown = null;
+          active = false;
+          btn.setAttribute('aria-expanded', 'false');
+          document.removeEventListener('click', onDocumentClick);
+          document.removeEventListener('keydown', onKeyDown);
+          window.removeEventListener('resize', positionDropdown);
+          window.removeEventListener('scroll', positionDropdown, true);
+        }
+        function positionDropdown() {
+          if (!dropdown) return;
+          const rect = btn.getBoundingClientRect();
+          const top = Math.round(window.scrollY + rect.bottom + 8);
+          const left = Math.round(window.scrollX + rect.left);
+          dropdown.style.top = `${top}px`;
+          dropdown.style.left = `${left}px`;
+          const ddRect = dropdown.getBoundingClientRect();
+          const vw = document.documentElement.clientWidth;
+          if (ddRect.right > vw - 8) {
+            const shiftLeft = ddRect.right - (vw - 8);
+            dropdown.style.left = `${left - shiftLeft}px`;
+          }
+          const vh = document.documentElement.clientHeight;
+          const ddH = ddRect.height;
+          const bottom = ddRect.bottom;
+          if (bottom > vh - 8) {
+            const overlap = bottom - (vh - 8);
+            dropdown.style.top = `${top - overlap}px`;
+          }
+        }
+        function onDocumentClick(e) {
+          if (e.target === btn || btn.contains(e.target)) return;
+          if (dropdown && dropdown.contains(e.target)) return;
+          closeDropdown();
+        }
+        function onKeyDown(e) { if (e.key === 'Escape') closeDropdown(); }
+        btn.addEventListener('click', (e) => { e.stopPropagation(); if (active) closeDropdown(); else openDropdown(); });
+      })();
+    </script>
+  </body>
+  </html>
