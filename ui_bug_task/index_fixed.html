@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Settings — Modern UI (Fixed Dropdown)</title>
+    <!-- Tailwind via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      /* Small custom helpers for polish */
+      .glass {
+        background: linear-gradient(135deg, rgba(255,255,255,0.7), rgba(255,255,255,0.5));
+        backdrop-filter: blur(8px) saturate(120%);
+      }
+      .shadow-deep { box-shadow: 0 20px 60px rgba(16,24,40,0.35); }
+      /* Smooth outline for keyboard focus */
+      .focus-ring:focus { outline: 3px solid rgba(99,102,241,0.18); outline-offset: 2px; }
+      /* Dropdown entry animation */
+      .scale-in { transform-origin: top right; animation: pop .18s cubic-bezier(.2,.9,.2,1); }
+      @keyframes pop { from { opacity: 0; transform: scale(.96); } to { opacity: 1; transform: scale(1);} }
+    </style>
+  </head>
+  <body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0f172a] via-[#0f172a] to-[#0b1220] text-slate-50 p-6">
+
+    <div class="max-w-5xl w-full space-y-8">
+
+      <header class="flex items-center justify-between gap-6">
+        <div class="flex items-center gap-4">
+          <div class="p-3 rounded-xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 shadow-xl">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" aria-hidden>
+              <path d="M12 3v18M21 12H3" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </div>
+          <div>
+            <h1 class="text-2xl font-extrabold tracking-tight">Settings</h1>
+            <p class="text-sm text-slate-300/80">Beautifully redesigned controls — dropdowns that never get clipped.</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <div class="text-sm text-slate-300/80">v1.0 • Fixed dropdown</div>
+          <button class="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-slate-700/40 border border-slate-600/40 hover:bg-slate-700/60 transition focus-ring" aria-label="Open global menu">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="text-indigo-300">
+              <path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+            </svg>
+            Menu
+          </button>
+        </div>
+      </header>
+
+      <main class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+
+        <!-- Left column: big content card -->
+        <section class="md:col-span-2 p-6 rounded-2xl glass shadow-deep border border-slate-700/30 overflow-visible relative">
+          <div class="flex items-start justify-between gap-6">
+            <div class="space-y-3">
+              <div class="inline-flex items-center gap-3 px-3 py-1 rounded-full bg-gradient-to-r from-indigo-400/30 to-pink-400/25 text-sm font-semibold text-indigo-200">Personal</div>
+              <h2 class="text-3xl font-bold leading-tight">Account preferences</h2>
+              <p class="text-slate-300/80 max-w-xl">A modern control center where interactions feel fast, smooth and reliable. Open the Actions menu to see the dropdown — it appears outside of this card so it won't be clipped.</p>
+            </div>
+
+            <div class="text-right text-slate-300/70 hidden md:block">
+              <div class="text-xs">Last updated</div>
+              <div class="mt-2 text-sm font-medium text-slate-200">Nov 21, 2025</div>
+            </div>
+          </div>
+
+          <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+            <!-- A card that purposely sets overflow:hidden to replicate where dropdown would normally clip -->
+            <article class="bg-gradient-to-br from-slate-800/30 via-slate-800/20 to-transparent rounded-xl p-4 border border-slate-700/30 overflow-hidden relative">
+              <div class="flex items-center justify-between">
+                <div>
+                  <h3 class="text-lg font-semibold">Profile & privacy</h3>
+                  <p class="text-sm text-slate-300/70 mt-1">Fine-tune what others see and how your data is stored.</p>
+                </div>
+
+                <!-- Actions button lives inside this overflowing card in the DOM, but its menu will be rendered in the document body (portal) -->
+                <div class="relative">
+                  <button id="actionsBtn" aria-haspopup="true" aria-expanded="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-500 to-pink-500 text-sm font-semibold shadow hover:brightness-105 transition-transform transform hover:-translate-y-0.5 focus-ring" aria-controls="floatingDropdown">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" class="text-white"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                    Actions
+                  </button>
+                </div>
+              </div>
+
+              <div class="mt-4 text-sm text-slate-300/60">This box intentionally uses <span class="font-mono text-xs">overflow:hidden</span> to demonstrate a scenario where a poorly implemented dropdown gets clipped. The new UI renders the menu outside the card so it's fully visible.</div>
+            </article>
+
+            <!-- Another small card to balance design -->
+            <article class="rounded-xl p-4 border border-slate-700/25 bg-gradient-to-tl from-slate-900/40 to-transparent">
+              <h4 class="font-semibold">Notifications</h4>
+              <p class="text-sm text-slate-300/70 mt-2">Real-time updates about important events.</p>
+              <div class="mt-4 flex gap-3 items-center">
+                <button class="px-3 py-2 rounded-lg bg-slate-700/30 text-sm hover:bg-slate-700/50 transition focus-ring">Manage</button>
+                <button class="px-3 py-2 rounded-lg bg-indigo-600/80 text-sm text-white hover:brightness-110 transition focus-ring">Enable</button>
+              </div>
+            </article>
+
+          </div>
+
+          <div class="mt-8 text-sm text-slate-400/80">Pro-tip: Render floating menus as part of the document root (a portal) or ensure ancestor containers allow visible overflow. This keeps UI reliable across layouts.</div>
+        </section>
+
+        <!-- Right column: utility panel -->
+        <aside class="p-6 rounded-2xl bg-gradient-to-tr from-slate-900/40 to-slate-900/10 border border-slate-700/25 space-y-4 glass shadow-deep">
+          <div class="flex items-center justify-between">
+            <div>
+              <h5 class="text-sm text-slate-200/90 font-semibold">Quick actions</h5>
+              <div class="text-xs text-slate-300/60">Common tasks and status</div>
+            </div>
+            <div class="text-xs text-slate-400/70">OK</div>
+          </div>
+
+          <div class="space-y-3">
+            <div class="rounded-lg p-3 bg-slate-800/30 border border-slate-700/30 text-sm">Storage: <strong class="text-indigo-300">12GB</strong> used</div>
+            <div class="rounded-lg p-3 bg-slate-800/30 border border-slate-700/30 text-sm">Privacy: <strong class="text-amber-300">High</strong></div>
+          </div>
+
+          <div>
+            <button class="w-full px-3 py-2 rounded-lg bg-gradient-to-r from-pink-500 to-indigo-500 text-sm font-semibold shadow focus-ring">Upgrade plan</button>
+          </div>
+        </aside>
+
+      </main>
+
+      <footer class="pt-4 text-center text-slate-300/60 text-sm">Built with care • Accessible and modern. Click Actions to open the fixed dropdown.</footer>
+
+    </div>
+
+    <!-- Floating dropdown root: will be moved into body via JS (but already in body so we can target easily) -->
+    <div id="floatingDropdown" role="menu" aria-hidden="true" class="hidden z-[10000] w-64 rounded-xl bg-gradient-to-br from-white/95 to-slate-50/90 text-slate-900 border border-slate-200/50 shadow-xl scale-in origin-top-right"></div>
+
+    <script>
+      // Simple portal pattern: when actions button is clicked, render the menu inside the document body so it cannot be clipped
+      (function(){
+        const btn = document.getElementById('actionsBtn');
+        const rootMenu = document.getElementById('floatingDropdown');
+
+        // menu content as template
+        const template = `
+          <div class=\"p-3 border-b border-slate-200/30 flex items-center justify-between gap-2\">
+            <div class=\"flex items-center gap-3\">
+              <div class=\"w-10 h-10 rounded-lg bg-gradient-to-tr from-indigo-400 to-pink-400 flex items-center justify-center text-white font-semibold\">AA</div>
+              <div>
+                <div class=\"font-semibold\">Actions</div>
+                <div class=\"text-xs text-slate-500\">Quick shortcuts for this card</div>
+              </div>
+            </div>
+            <div class=\"text-xs text-slate-400\">Menu</div>
+          </div>
+          <div class=\"p-3 space-y-1\">
+            <button class=\"w-full text-left px-3 py-2 rounded-md hover:bg-slate-100/80 transition\" role=\"menuitem\">Edit profile</button>
+            <button class=\"w-full text-left px-3 py-2 rounded-md hover:bg-slate-100/80 transition\" role=\"menuitem\">Privacy settings</button>
+            <button class=\"w-full text-left px-3 py-2 rounded-md hover:bg-slate-100/80 transition\" role=\"menuitem\">Notifications</button>
+            <button class=\"w-full text-left px-3 py-2 rounded-md hover:bg-rose-50 text-rose-600 transition font-semibold\" role=\"menuitem\">Delete account</button>
+          </div>
+        `;
+
+        let mounted = false;
+
+        function openMenu() {
+          if (mounted) return closeMenu();
+          rootMenu.innerHTML = template;
+          rootMenu.classList.remove('hidden');
+          rootMenu.setAttribute('aria-hidden', 'false');
+          btn.setAttribute('aria-expanded','true');
+
+          // position the dropdown near button using getBoundingClientRect
+          const btnRect = btn.getBoundingClientRect();
+          const menuRect = rootMenu.getBoundingClientRect();
+
+          // prefer to place below by default; keep it inside viewport
+          let left = Math.min(window.innerWidth - 16 -  menuRect.width, Math.max(8, btnRect.right - menuRect.width));
+          let top = btnRect.bottom + 12;
+
+          // if not enough space below, place above
+          if (top + menuRect.height > window.innerHeight - 8) {
+            top = btnRect.top - menuRect.height - 12;
+          }
+
+          rootMenu.style.left = `${left}px`;
+          rootMenu.style.top = `${top}px`;
+          rootMenu.style.position = 'fixed';
+
+          mounted = true;
+
+          // close when clicking outside
+          setTimeout(() => window.addEventListener('click', onOutside), 50);
+        }
+
+        function closeMenu() {
+          rootMenu.classList.add('hidden');
+          rootMenu.setAttribute('aria-hidden', 'true');
+          btn.setAttribute('aria-expanded','false');
+          mounted = false;
+          window.removeEventListener('click', onOutside);
+        }
+
+        function onOutside(e){
+          if (!btn.contains(e.target) && !rootMenu.contains(e.target)) closeMenu();
+        }
+
+        btn.addEventListener('click', (e) => { e.stopPropagation(); openMenu(); });
+
+        // reposition on resize/scroll
+        window.addEventListener('resize', () => { if (mounted) { closeMenu(); openMenu(); } });
+        window.addEventListener('scroll', () => { if (mounted) { closeMenu(); } }, { passive: true });
+
+        // Expose function for test script to ensure we can query the dropdown
+        window.__UI_BUG_FIXED = true;
+      })();
+    </script>
+  </body>
+</html>
