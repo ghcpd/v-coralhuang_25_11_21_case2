@@ -4,7 +4,8 @@
   "description": "A simple UI bug reproduction and test case",
   "scripts": {
     "start": "http-server . -p 8080",
-    "test": "node verify_bug.js"
+    "test": "node verify_bug.js",
+    "test:fixed": "node verify_fixed.js"
   },
   "dependencies": {
     "http-server": "^14.1.1",
